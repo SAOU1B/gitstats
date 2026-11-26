@@ -1,8 +1,9 @@
 """gitstats - print a short summary of a Git repository's history.
 
-Usage: python gitstats.py [path-to-repo]
+Usage: python gitstats.py [--json] [path-to-repo]
 """
 import collections
+import json
 import subprocess
 import sys
 
@@ -28,12 +29,17 @@ def summarize(entries):
 
 
 def main(argv):
-    repo = argv[0] if argv else "."
+    as_json = "--json" in argv
+    args = [a for a in argv if a != "--json"]
+    repo = args[0] if args else "."
     try:
         s = summarize(log_lines(repo))
     except NotARepository:
         print(f"error: '{repo}' is not a Git repository", file=sys.stderr)
         return 1
+    if as_json:
+        print(json.dumps(s, ensure_ascii=False))
+        return 0
     print(f"Commits : {s['commits']}")
     print(f"Period  : {s['first']} -> {s['last']}")
     for name, n in s["authors"].items():

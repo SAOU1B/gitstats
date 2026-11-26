@@ -1,3 +1,4 @@
+import json
 import tempfile
 
 from gitstats import main, summarize
@@ -15,7 +16,17 @@ def test_not_a_repository_returns_error_code():
         assert main([empty_dir]) == 1
 
 
+def test_json_output(capsys=None):
+    import contextlib, io
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        assert main(["--json", "."]) == 0
+    data = json.loads(buf.getvalue())
+    assert data["commits"] >= 1 and "authors" in data
+
+
 if __name__ == "__main__":
     test_summarize()
     test_not_a_repository_returns_error_code()
+    test_json_output()
     print("ok")
