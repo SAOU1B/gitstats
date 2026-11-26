@@ -7,9 +7,16 @@ import subprocess
 import sys
 
 
+class NotARepository(Exception):
+    pass
+
+
 def log_lines(repo):
-    out = subprocess.run(["git", "-C", repo, "log", "--pretty=%an|%ad", "--date=short"],
-                         capture_output=True, text=True, check=True).stdout
+    try:
+        out = subprocess.run(["git", "-C", repo, "log", "--pretty=%an|%ad", "--date=short"],
+                             capture_output=True, text=True, check=True).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+        raise NotARepository(repo) from exc
     return [line.split("|", 1) for line in out.splitlines() if line]
 
 
@@ -20,9 +27,19 @@ def summarize(entries):
             "first": days[0] if days else None, "last": days[-1] if days else None}
 
 
-if __name__ == "__main__":
-    s = summarize(log_lines(sys.argv[1] if len(sys.argv) > 1 else "."))
+def main(argv):
+    repo = argv[0] if argv else "."
+    try:
+        s = summarize(log_lines(repo))
+    except NotARepository:
+        print(f"error: '{repo}' is not a Git repository", file=sys.stderr)
+        return 1
     print(f"Commits : {s['commits']}")
     print(f"Period  : {s['first']} -> {s['last']}")
     for name, n in s["authors"].items():
         print(f"Author  : {name} ({n} commits)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
