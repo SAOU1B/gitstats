@@ -6,7 +6,7 @@ authors:
   - family-names: "SAOUAB"
     given-names: "ZAKARIAE"
     affiliation: "Hubei University of Technology"
-version: 1.0.0
+version: 1.0.1
 date-released: 2026-11-26
 license: MIT
 repository-code: "https://github.com/SAOU1B/gitstats"
