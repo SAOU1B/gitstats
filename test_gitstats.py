@@ -1,4 +1,6 @@
-from gitstats import summarize
+import tempfile
+
+from gitstats import main, summarize
 
 
 def test_summarize():
@@ -8,6 +10,12 @@ def test_summarize():
     assert (s["first"], s["last"]) == ("2026-11-26", "2026-11-28")
 
 
+def test_not_a_repository_returns_error_code():
+    with tempfile.TemporaryDirectory() as empty_dir:
+        assert main([empty_dir]) == 1
+
+
 if __name__ == "__main__":
     test_summarize()
+    test_not_a_repository_returns_error_code()
     print("ok")
