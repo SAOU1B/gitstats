@@ -1,6 +1,7 @@
 # gitstats
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24552147.svg)](https://doi.org/10.5281/zenodo.24552147)
+[![tests](https://github.com/SAOU1B/gitstats/actions/workflows/tests.yml/badge.svg)](https://github.com/SAOU1B/gitstats/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **gitstats** is a tiny command-line tool that summarises the commit history of a Git repository:
